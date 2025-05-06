@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         SONARQUBE_SERVER = 'SonarQube'
-        DOCKER_IMAGE = 'abinmathew004/enterprise-java-cicd'
+        DOCKER_IMAGE = 'alam1005/new'
     }
 
     tools {
