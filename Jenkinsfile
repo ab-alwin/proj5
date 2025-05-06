@@ -3,6 +3,7 @@ pipeline {
 
     environment {
         SONARQUBE_SERVER = 'SonarQube'
+        DOCKER_IMAGE = 'alam1005/new'
     }
 
     tools {
@@ -13,14 +14,14 @@ pipeline {
     stages {
         stage('Build & Unit Tests') {
             steps {
-                bat 'mvn clean install'
+                sh 'mvn clean install'
             }
         }
 
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv("${SONARQUBE_SERVER}") {
-                    bat 'mvn sonar:sonar'
+                    sh 'mvn sonar:sonar'
                 }
             }
         }
@@ -30,11 +31,27 @@ pipeline {
                 archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
             }
         }
+
+        stage('Docker Build & Push') {
+            steps {
+                withCredentials([usernamePassword(
+                    credentialsId: 'docker-cred',
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_PASS'
+                )]) {
+                    script {
+                        sh 'echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin'
+                        sh 'docker build -t $DOCKER_IMAGE .'
+                        sh 'docker push $DOCKER_IMAGE'
+                    }
+                }
+            }
+        }
     }
 
     post {
         success {
-            echo '✅ Build, test, and analysis completed successfully!'
+            echo '✅ All stages completed successfully!'
         }
         failure {
             echo '❌ Build failed. Check logs!'
