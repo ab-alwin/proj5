@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: java-ci-cd-app
+  name: java-app
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: java-ci-cd-app
+      app: java-app
   template:
     metadata:
       labels:
-        app: java-ci-cd-app
+        app: java-app
     spec:
       containers:
-      - name: java-app
-        image: youracr.azurecr.io/java-ci-cd-app:latest
-        ports:
-        - containerPort: 8081
+        - name: java-app
+          image: alam1005/new
+          ports:
+            - containerPort: 8080
