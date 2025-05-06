@@ -4,11 +4,11 @@ metadata:
   name: java-app-service
   namespace: default
 spec:
-  type: NodePort
+  type: LoadBalancer
+  loadBalancerIP: <existing-public-ip>
   selector:
     app: java-app
   ports:
     - protocol: TCP
       port: 80
       targetPort: 8080
-      nodePort: 30036  # choose a port between 30000-32767
